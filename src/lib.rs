@@ -14,11 +14,7 @@ enum Token {
 }
 
 impl Token {
-    fn is_operand(&self) -> bool {
-        matches!(self, Token::VariableX | Token::Value(_))
-    }
-
-    fn is_operator(&self) -> bool {
+    pub fn is_operator(&self) -> bool {
         matches!(
             self,
             Token::Addition | Token::Subtraction | Token::Multiplication | Token::Division
@@ -115,7 +111,7 @@ impl<'a> Tokenizer<'a> {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-enum Tree {
+pub enum Tree {
     VariableX,
     Value(i64),
     Addition(Box<Tree>, Box<Tree>),
@@ -138,7 +134,7 @@ impl Display for Tree {
 }
 
 impl Tree {
-    fn new(input: &str) -> Self {
+    pub fn new(input: &str) -> Self {
         let mut parser = Parser::new(input);
         parser.parse()
     }
@@ -217,20 +213,20 @@ impl<'a> Parser<'a> {
     }
 }
 
-struct Solver {
+pub struct Solver {
     lhs: Tree,
     rhs: Tree,
 }
 
 impl Solver {
-    fn new(input: &str) -> Self {
+    pub fn new(input: &str) -> Self {
         let mut split = input.split('=');
         let lhs = Tree::new(split.next().unwrap());
         let rhs = Tree::new(split.next().unwrap());
         Self { lhs, rhs }
     }
 
-    fn solve(mut self) -> Self {
+    pub fn solve(mut self) -> Self {
         loop {
             match self.lhs {
                 Tree::VariableX => return self,
@@ -275,11 +271,11 @@ impl Solver {
         }
     }
 
-    fn lhs(&self) -> &Tree {
+    pub fn lhs(&self) -> &Tree {
         &self.lhs
     }
 
-    fn rhs(&self) -> &Tree {
+    pub fn rhs(&self) -> &Tree {
         &self.rhs
     }
 }
